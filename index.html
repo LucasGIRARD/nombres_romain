@@ -4,9 +4,33 @@
 	<title></title>
 </head>
 <body>
-	<form method="post">
-		<input type="number" name="number" min="1" max="100">
+	<form id="form" method="post">
+		<input type="number" name="number" id="number" min="1" max="100">
 		<input type="submit" name="valider">
 	</form>
+	<div>result:<span id="result"></span></div>
+	<script type="text/javascript">
+		if (!!window.EventSource) {
+			var source = new EventSource('/stream')
+
+			source.addEventListener('message', function(e) {
+				document.getElementById("result").innerHTML = e.data;
+			}, false)
+
+		} else {
+			console.log("Your browser doesn't support SSE")
+		}
+
+		document.getElementById('form').onsubmit=function() {
+			var http = new XMLHttpRequest();
+			var url = "";
+			var params = "number="+document.getElementById("number").value;
+			http.open("POST", url, true);
+			http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			http.send(params);
+
+			return false;
+		}
+	</script>
 </body>
 </html>

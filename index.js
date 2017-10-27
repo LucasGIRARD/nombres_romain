@@ -1,10 +1,15 @@
 const express = require('express')
 const app = express()
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
+const sse = require('./sse')
+
+var connections = []
 
 app.use(bodyParser.urlencoded({
 	extended: true
-}));
+}))
+
+app.use(sse)
 
 app.get('/', function (req, res) {
 	res.sendFile(__dirname+'/index.html')
@@ -45,9 +50,18 @@ app.post('/', function(req, res){
 		rest = rest % dividers[divider];
 		last = divider;
 	}
+	for(var i = 0; i < connections.length; i++) {
+		connections[i].sseSend(result)
+	}
 
-	res.send(value + ": " + result);
+	res.sendStatus(200)
 });
+
+app.get('/stream', function(req, res) {
+  res.sseSetup()
+  res.sseSend("pending...")
+  connections.push(res)
+})
 
 app.listen(80, function () {
 	console.log('Serveur is up!')
