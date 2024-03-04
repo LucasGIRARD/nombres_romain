@@ -1,7 +1,8 @@
 {
   "name": "nombres_romain",
   "version": "1.0.0",
-  "description": "",
+  "description": "a node test",
+  "keywords": ["node", "javascript"],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
